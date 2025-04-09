@@ -10,6 +10,7 @@ const dbConfig = {
 const pool = mysql.createPool(dbConfig);
 
 export default async function handler(req, res) {
+  // Configuration CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -18,12 +19,20 @@ export default async function handler(req, res) {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
+  // Gestion des requêtes OPTIONS
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  if (req.method === 'POST' && req.url === '/api/auth/login') {
+  // Route de test
+  if (req.method === 'GET') {
+    res.status(200).json({ message: 'API ComHodl', status: 'online' });
+    return;
+  }
+
+  // Route de connexion
+  if (req.method === 'POST' && req.url === '/auth/login') {
     try {
       const { email, mot_de_passe } = req.body;
       
@@ -46,5 +55,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  res.status(200).json({ message: 'API ComHodl', status: 'online' });
+  // Route par défaut
+  res.status(404).json({ error: 'Route non trouvée' });
 }
